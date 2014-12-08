@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular/angular-route.js"></script>
+    <script src="lib/angular/i18n/angular-locale_fr-fr.js"></script>
+    <script src="js/app.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+    <style type="text/css">
+        tr.big td, span.bold { font-weight: bold; }
+    </style>
+
+</head>
+<body ng-app="bonApp">
+    <div class="panel panel-default" ng-controller="BonController">
+        <div class="panel-body">
+            <table  class="table table-bordered">
+                <tr>
+                    <th>Référence Article</th>
+                    <th>Libellé</th>
+                    <th>Prix Unitaire HT</th>
+                    <th>Quantité</th>
+                    <th>Montant HT</th>
+                    <th>Montant TTC</th>
+                    <th></th>
+                </tr>
+                <tr ng-repeat="article in articles" ng-class="{big : isBold(article)}">
+                    <td>
+                        {{article.isbn}}
+                    </td>
+                    <td>
+                        {{article.title}}
+                    </td>
+                    <td>
+                        {{article.price | currency}}
+                    </td>
+                    <td>
+                        <input class="form-control" type="number" ng-model="article.quantite"/>
+                    </td>
+                    <td>
+                        {{getMontant(article) | currency}}
+                    </td>
+                    <td>
+                        {{getTVA(article) | currency}}
+                    </td>
+                    <td>
+                        <a class="deleteButton" href="" ng-click="deleteArticle(article)"><span class="glyphicon glyphicon-remove" style="color: red;"></span></a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="font-weight: bold; text-align: right;">Total : </td>
+                    <td> {{getTotalHT() | currency}} </td>
+                    <td> {{getTotalTTC() | currency}} </td>
+                    <td></td>
+                </tr>
+            </table>
+
+            <!--<form ng-submit="addArticle()">-->
+                <!--<label for="isbn">ISBN</label> <input type="text" id="isbn" name="isbn" ng-model="isbn"/>-->
+                <!--<label for="title">Title</label> <input type="text" id="title" name="title" ng-model="title"/>-->
+                <!--<label for="quant">Quantite</label> <input type="text" id="quant" name="quant" ng-model="quant"/>-->
+                <!--<label for="price">Price</label> <input type="text" id="price" name="price" ng-model="price"/>-->
+                <!--<button type="submit">Add</button>-->
+            <!--</form>-->
+
+            <form ng-submit="addArticle2()">
+                <label for="artCatalogue">Article</label> <select id="artCatalogue" class="form-control" ng-model="artCatalogue" ng-options="c as c.title + ' (' + (c.price | currency) + ')' for c in catalogue">
+                    <option value="">-- Chose an article --</option>
+                </select>
+                <br/>
+                <div ng-show="artCatalogue">
+                    <div class="panel panel-default" ng-controller="BonController">
+                        <div class="panel-body">
+                            <img src="{{artCatalogue.img}}" alt="Img Article" style="float: left;"/> <h3>{{artCatalogue.title + " - " + (artCatalogue.price | currency)}}</h3>
+                            <span class="bold">Publisher :</span> {{artCatalogue.publisher}}<br/>
+                            <span class="bold">Author :</span> {{artCatalogue.author}}<br/>
+                            <span class="bold">Page Number :</span> {{artCatalogue.pages}}<br/>
+                            <span class="bold">Rating :</span> {{artCatalogue.rating + " / 5"}}<br/>
+                            {{artCatalogue.desc}}
+                        </div>
+                    </div>
+                </div>
+                <label for="quantite">Quantite</label> <input type="number" class="form-control" id="quantite" name="quantite" ng-model="quantite" placeholder="Quantite"/><br/>
+                <button type="submit" class="btn btn-info">Add</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
